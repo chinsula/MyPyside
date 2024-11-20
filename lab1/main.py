@@ -1,18 +1,12 @@
 from PySide6 import QtWidgets
 
-# app = QtWidgets.QApplication()
-#
-# window = QtWidgets.QWidget()
-# window.setWindowTitle('Простейшее окно')
-# window.show()
-#
-# app.exec()
-
-
+from lab1.ui.form1 import Ui_Form
 class Window(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Простейшее окно')
+
+        self.ui = Ui_Form
+        self.ui.setupUi(self)
 
 
 if __name__ == "__main__":
