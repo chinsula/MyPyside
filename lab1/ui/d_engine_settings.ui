@@ -106,7 +106,7 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
+        <item alignment="">
          <widget class="QSlider" name="verticalSlider_4">
           <property name="minimumSize">
            <size>
@@ -147,7 +147,7 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
+        <item alignment="">
          <widget class="QSlider" name="verticalSlider_5">
           <property name="minimumSize">
            <size>

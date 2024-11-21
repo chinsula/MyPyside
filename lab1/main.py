@@ -1,16 +1,28 @@
+"""
+Подключение формы созданной в дизайнере
+
+Команда для конвертации формы:
+PySide6-uic path_to_form.ui -o path_to_form.py
+"""
+
 from PySide6 import QtWidgets
 
-from lab1.ui.form1 import Ui_Form
-class Window(QtWidgets.QWidget):
+from lab1.ui.b_login import Ui_Form  # Импортируем класс формы
+
+
+class Window(QtWidgets.QWidget):  # наследуемся от того же класса, что и форма в QtDesigner
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.ui = Ui_Form
+        # Создание "прокси" переменной для работы с формой
+        self.ui = Ui_Form()
         self.ui.setupUi(self)
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication()
-    w = Window()
-    w.show()
+
+    window = Window()
+    window.show()
+
     app.exec()
