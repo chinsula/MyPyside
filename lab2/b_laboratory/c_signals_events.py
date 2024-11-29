@@ -22,9 +22,9 @@
 import time
 
 from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtGui import QGuiApplication
 
 from lab2.b_laboratory.ui import c_signals_events_form
-
 
 class Window(QtWidgets.QWidget):
 
@@ -37,6 +37,7 @@ class Window(QtWidgets.QWidget):
     def initSignals(self):
         self.ui.pushButtonMoveCoords.clicked.connect(self.onPuchButtonMoveWindowClicked)
         # self.ui.pushButtonMoveCoords.installEventFilter(self)
+        self.ui.pushButtonGetData.clicked.connect(self.onPuchButtonGetLogClicked)
 
     # def eventFilter(self, watched, event):
     #
@@ -55,9 +56,11 @@ class Window(QtWidgets.QWidget):
         y = int(self.ui.spinBoxY.text())
         window.move(x, y)
 
-
-
-
+    # слот для получения лога
+    def onPuchButtonGetLogClicked(self):
+    # получение разрешения экрана
+        width, height = app.primaryScreen().size().toTuple()
+        self.ui.plainTextEdit.setPlainText(f"Разрешение основного экрана: {width} пикселей на {height} пикселей")
 if __name__ == "__main__":
     app = QtWidgets.QApplication()
 
