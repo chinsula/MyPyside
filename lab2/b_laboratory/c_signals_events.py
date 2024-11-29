@@ -35,8 +35,18 @@ class Window(QtWidgets.QWidget):
         self.initSignals()  # Вызвать метод с инициализацией сигналов
 
     def initSignals(self):
-        # self.ui.pushButtonMoveCoords.clicked.connect(self.onPuchButtonMoveWindowClicked)
-        self.ui.pushButtonMoveCoords.installEventFilter(self)
+        self.ui.pushButtonMoveCoords.clicked.connect(self.onPuchButtonMoveWindowClicked)
+        # self.ui.pushButtonMoveCoords.installEventFilter(self)
+
+    # def eventFilter(self, watched, event):
+    #
+    #     if event.type() == QtCore.QEvent.Type.MouseButtonPress:
+    #         self.onPuchButtonMoveWindowClicked()
+    #
+    #     return super().eventFilter(watched, event)
+
+
+
     # слоты для подключения
 
     # слот перемещения окна по заданным координатам
@@ -45,11 +55,7 @@ class Window(QtWidgets.QWidget):
         y = int(self.ui.spinBoxY.text())
         window.move(x, y)
 
-    def eventFilter(self, watched, event):
-        if event.type() == QtCore.QEvent.Type.MouseButtonPress:
-            self.onPuchButtonMoveWindowClicked()
 
-        return super().eventFilter(watched, event)
 
 
 if __name__ == "__main__":
