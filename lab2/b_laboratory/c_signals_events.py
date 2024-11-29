@@ -19,15 +19,37 @@
     * При перемещении окна выводить его старую и новую позицию
     * При изменении размера окна выводить его новый размер
 """
+import time
 
+from PySide6 import QtWidgets, QtCore, QtGui
 
-from PySide6 import QtWidgets
+from lab2.b_laboratory.ui import c_signals_events_form
 
 
 class Window(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.ui = c_signals_events_form.Ui_Form()
+        self.ui.setupUi(self)
+        self.initSignals()  # Вызвать метод с инициализацией сигналов
+
+    def initSignals(self):
+        # self.ui.pushButtonMoveCoords.clicked.connect(self.onPuchButtonMoveWindowClicked)
+        self.ui.pushButtonMoveCoords.installEventFilter(self)
+    # слоты для подключения
+
+    # слот перемещения окна по заданным координатам
+    def onPuchButtonMoveWindowClicked(self):
+        x = int(self.ui.spinBoxX.text())
+        y = int(self.ui.spinBoxY.text())
+        window.move(x, y)
+
+    def eventFilter(self, watched, event):
+        if event.type() == QtCore.QEvent.Type.MouseButtonPress:
+            self.onPuchButtonMoveWindowClicked()
+
+        return super().eventFilter(watched, event)
 
 
 if __name__ == "__main__":
