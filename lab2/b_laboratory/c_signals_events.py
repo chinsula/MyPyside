@@ -21,7 +21,7 @@
 """
 import time
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtCore
 
 from lab2.b_laboratory.ui import c_signals_events_form
 
@@ -33,18 +33,30 @@ class Window(QtWidgets.QWidget):
         self.ui = c_signals_events_form.Ui_Form()
         self.ui.setupUi(self)
         self.initSignals()  # Вызвать метод с инициализацией сигналов
+        self.installEventFilter(self)
+
+    def eventFilter(self, watched, event):
+        # начальное положение (координаты) окна
+        if event.type() == QtCore.QEvent.Type.NonClientAreaMouseButtonPress:
+            x = window.geometry().x()
+            y = window.geometry().y()
+            print(f"{time.ctime()} начальное положение окна {x} пикселей на {y} пикселей")  # конечное положение (координаты) окна
+        if event.type() == QtCore.QEvent.Type.NonClientAreaMouseButtonRelease:
+            x = window.geometry().x()
+            y = window.geometry().y()
+            print(f"{time.ctime()} конечное положение окна {x} пикселей на {y} пикселей")
+
+        # При изменении размера окна выводить его новый размер
+        if event.type() == (QtCore.QEvent.Type.Resize and QtCore.QEvent.Type.NonClientAreaMouseButtonRelease):
+            w, h = window.size().toTuple()
+            print(f"Новый размер окна: {w} пикселей на {h} пикселей")
+
+        return super().eventFilter(watched, event)
 
     def initSignals(self):
         self.ui.pushButtonMoveCoords.clicked.connect(self.onPuchButtonMoveWindowClicked)
         # self.ui.pushButtonMoveCoords.installEventFilter(self)
         self.ui.pushButtonGetData.clicked.connect(self.onPuchButtonGetLogClicked)
-
-    # def eventFilter(self, watched, event):
-    #
-    #     if event.type() == QtCore.QEvent.Type.MouseButtonPress:
-    #         self.onPuchButtonMoveWindowClicked()
-    #
-    #     return super().eventFilter(watched, event)
 
     # слоты для подключения
 
@@ -87,6 +99,7 @@ class Window(QtWidgets.QWidget):
                                            f"Координаты центра приложения: {w3} пикселей на {h3} пикселей\n"
                                            f"Окно: {collaps_window}, {activ_window}")
         return collaps_window, activ_window
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication()
