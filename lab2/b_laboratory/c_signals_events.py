@@ -106,6 +106,5 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication()
 
     window = Window()
-    print(window.onPuchButtonGetLogClicked())
     window.show()
     app.exec()
