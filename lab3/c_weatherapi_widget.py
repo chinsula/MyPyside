@@ -60,14 +60,12 @@ class Window(QtWidgets.QWidget):
 
     def __initSignals(self):
         self.pushButtonHandle.clicked.connect(self.on_started)
-        # self.outputWheather.setText(self.weatherHandler.wheatherHandlerSignal())
 
-
-        # self.outputWheather.setPlainText(self.weatherHandler.data)
 
     def on_started(self):
-        self.weatherHandler = WeatherHandler(lat=int(self.inputLat.text()), lon=int(self.inputLon.text()))
-        self.weatherHandler.setDelay(int(self.inputDelay.text()))
+        self.weatherHandler = WeatherHandler(lat=float(60.08 if not self.inputLat.text() else self.inputLat.text()),
+                                             lon=float(64.47 if not self.inputLon.text() else self.inputLon.text()))
+        self.weatherHandler.setDelay(int(1 if not self.inputDelay.text() else self.inputDelay.text()))
         self.weatherHandler.start()
         self.weatherHandler.sleep(self.weatherHandler.delay1)
         self.weatherHandler.wheatherHandlerSignal.connect(self.apiUpdate)
@@ -89,7 +87,7 @@ class Window(QtWidgets.QWidget):
 
 
     def apiUpdate(self, data):
-        self.outputWheather.setText("str(data)")
+        self.outputWheather.setText(f"{data}")
 
 
 

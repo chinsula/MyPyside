@@ -3,9 +3,11 @@
 """
 
 import time
+from pprint import pprint
 from urllib import request
 
 import psutil
+import requests
 from PySide6 import QtCore
 
 
@@ -15,6 +17,16 @@ class SystemInfo(QtCore.QThread):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.delay = None  #  создайте атрибут класса self.delay = None, для управлением задержкой получения данных
+
+    def setDelay(self, delay) -> None:
+        """
+        Метод для установки времени задержки обновления сайта
+
+        :param delay: время задержки обновления информации о доступности сайта
+        :return: None
+        """
+
+        self.delay = delay
 
     def run(self) -> None:  # переопределить метод run
         if self.delay is None:  # Если задержка не передана в поток перед его запуском
@@ -29,7 +41,7 @@ class SystemInfo(QtCore.QThread):
             print("CPU value", cpu_value, "RAM value", ram_value)
 
 class WeatherHandler(QtCore.QThread):
-    wheatherHandlerSignal = QtCore.Signal(int) # Пропишите сигналы, которые считаете нужными
+    wheatherHandlerSignal = QtCore.Signal(dict) # Пропишите сигналы, которые считаете нужными
 
     def __init__(self, lat=0, lon=0, parent=None):
         super().__init__(parent)
@@ -37,6 +49,7 @@ class WeatherHandler(QtCore.QThread):
         self.__api_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
         self.__delay = 10
         self.__status = None
+        self.delay1 = 1
 
     def setDelay(self, delay) -> None:
         """
@@ -48,12 +61,10 @@ class WeatherHandler(QtCore.QThread):
 
         self.delay1 = delay
 
-    def run(self, requests=None) -> None:
+    def run(self) -> None:
         # настройте метод для корректной работы
-        while self.__status:
+        while True:
             # Примерный код ниже
             response = requests.get(self.__api_url)
-            data = response.json()
-            self.wheatherHandlerSignal.emit(data)
-            time.sleep(self.delay)
-
+            self.wheatherHandlerSignal.emit(response.json())
+            time.sleep(self.delay1)

@@ -54,13 +54,14 @@ class Window(QtWidgets.QWidget):
 
         self.inputDelay.textChanged.connect(self.onChangeInputDelay)
         self.thread = SystemInfo()
+        # self.thread.setDelay(int(self.inputDelay.text()))
         self.thread.started.connect(lambda: print("Поток запущен"))
         self.thread.finished.connect(lambda: print("Поток остановлен"))
         self.thread.start()
 
     def onChangeInputDelay(self):
-        self.systemInfo.delay = int(self.inputDelay.text())
-        print(self.systemInfo.delay)
+        self.thread.setDelay(int(1 if not self.inputDelay.text() else self.inputDelay.text()))
+        print(self.thread.delay)
 
 
 
