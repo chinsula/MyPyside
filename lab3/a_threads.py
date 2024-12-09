@@ -29,7 +29,7 @@ class SystemInfo(QtCore.QThread):
             print("CPU value", cpu_value, "RAM value", ram_value)
 
 class WeatherHandler(QtCore.QThread):
-    wheatherHandler = QtCore.Signal(int) # Пропишите сигналы, которые считаете нужными
+    wheatherHandlerSignal = QtCore.Signal(int) # Пропишите сигналы, которые считаете нужными
 
     def __init__(self, lat=0, lon=0, parent=None):
         super().__init__(parent)
@@ -46,7 +46,7 @@ class WeatherHandler(QtCore.QThread):
         :return: None
         """
 
-        self.__delay = delay
+        self.delay1 = delay
 
     def run(self, requests=None) -> None:
         # настройте метод для корректной работы
@@ -54,6 +54,6 @@ class WeatherHandler(QtCore.QThread):
             # Примерный код ниже
             response = requests.get(self.__api_url)
             data = response.json()
-            self.wheatherHandler.emit(data)
+            self.wheatherHandlerSignal.emit(data)
             time.sleep(self.delay)
 
