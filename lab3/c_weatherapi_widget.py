@@ -72,21 +72,7 @@ class Window(QtWidgets.QWidget):
         self.weatherHandler.setDelay(int(1 if not self.inputDelay.text() else self.inputDelay.text()))
         self.weatherHandler.start()
         self.weatherHandler.sleep(self.weatherHandler.delay1)
-        # self.weatherHandler.connect(self.get_signal_from_thread)
         self.weatherHandler.wheatherHandlerSignal.connect(self.apiUpdate)
-
-    def get_signal_from_thread(self):
-        if self.pushButtonHandle.isChecked():
-            self.pushButtonHandle.setText('Остановить')
-            self.inputLat.setReadOnly(True)
-            self.inputLon.setReadOnly(True)
-            self.outputWheather.setReadOnly(True)
-        elif not self.pushButtonHandle.isChecked():
-            self.weatherHandler.terminate()
-            self.pushButtonHandle.setText('Запустить')
-            self.inputLat.setReadOnly(False)
-            self.inputLon.setReadOnly(False)
-            self.outputWheather.setReadOnly(False)
 
 
     def apiUpdate(self, data):
