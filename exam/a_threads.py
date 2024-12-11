@@ -3,26 +3,27 @@
 """
 import datetime
 import time
-
-
 import requests
+
 from PySide6 import QtCore
 
 
+
 class WeatherHandler(QtCore.QThread):
-    wheatherHandlerSignal = QtCore.Signal(str) # Пропишите сигналы, которые считаете нужными
+    wheatherHandlerSignal = QtCore.Signal(str)  # Пропишите сигналы, которые считаете нужными
 
-    def __init__(self, parent=None):
+    def __init__(self, city: str, parent=None):
         super().__init__(parent)
-
+        self.__city = city
         self.__delay = 10
         self.__status = None
         self.delay1 = 1
 
+    def set_city(self, city: str) -> None:
+        self.__city = city
+
     def get_weather(self):
         open_weather_token = "1044ae1ab27265501dac183236ffd563"
-
-        message = "Урух"
 
         code_to_smile = {
             "Clear": "Ясно \U00002600",
@@ -36,7 +37,7 @@ class WeatherHandler(QtCore.QThread):
 
         try:
             r = requests.get(
-                f"https://api.openweathermap.org/data/2.5/weather?q={message}&appid={open_weather_token}&units=metric"
+                f"https://api.openweathermap.org/data/2.5/weather?q={self.__city}&appid={open_weather_token}&units=metric"
             )
             data = r.json()
 
@@ -54,8 +55,7 @@ class WeatherHandler(QtCore.QThread):
             wind = data["wind"]["speed"]
             sunrise_timestamp = datetime.datetime.fromtimestamp(data["sys"]["sunrise"])
             sunset_timestamp = datetime.datetime.fromtimestamp(data["sys"]["sunset"])
-            length_of_the_day = datetime.datetime.fromtimestamp(
-                data["sys"]["sunset"]) - datetime.datetime.fromtimestamp(
+            length_of_the_day = datetime.datetime.fromtimestamp(data["sys"]["sunset"]) - datetime.datetime.fromtimestamp(
                 data["sys"]["sunrise"])
 
             mes_repl = (f"***{datetime.datetime.now().strftime('%d-%m-%Y %H:%M')}***\n"
@@ -65,10 +65,7 @@ class WeatherHandler(QtCore.QThread):
                         )
         except:
             mes_repl = "Проверьте название города"
-
         return mes_repl
-
-
 
     def setDelay(self, delay) -> None:
         """
