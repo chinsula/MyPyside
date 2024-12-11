@@ -9,7 +9,9 @@
 3. поле для вывода информации о погоде в указанных координатах
 4. поток необходимо запускать и останавливать при нажатии на кнопку
 """
+import datetime
 
+import requests
 from PySide6 import QtWidgets
 
 from a_threads import WeatherHandler
