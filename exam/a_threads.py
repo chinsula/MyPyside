@@ -1,46 +1,17 @@
 """
 Модуль в котором содержаться потоки Qt
 """
-
+import datetime
 import time
 from pprint import pprint
 from urllib import request
-import weather
+from c_weatherapi_widget import Window
 
 
 import psutil
 import requests
 from PySide6 import QtCore
 
-
-class SystemInfo(QtCore.QThread):
-    systemInfoReceived = QtCore.Signal(list)  # Создайте экземпляр класса Signal и передайте ему в конструктор тип данных передаваемого значения (в текущем случае list)
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.delay = None  #  создайте атрибут класса self.delay = None, для управлением задержкой получения данных
-
-    def setDelay(self, delay) -> None:
-        """
-        Метод для установки времени задержки обновления сайта
-
-        :param delay: время задержки обновления информации о доступности сайта
-        :return: None
-        """
-
-        self.delay = delay
-
-    def run(self) -> None:  # переопределить метод run
-        if self.delay is None:  # Если задержка не передана в поток перед его запуском
-            self.delay = 1  # то устанавливайте значение 1
-
-        while True:  # Запустите бесконечный цикл получения информации о системе
-            cpu_value = psutil.cpu_percent()  # с помощью вызова функции cpu_percent() в пакете psutil получите загрузку CPU
-            ram_value = psutil.virtual_memory()  # с помощью вызова функции virtual_memory().percent в пакете psutil получите загрузку RAM
-            data = [cpu_value, ram_value, self.delay]
-            self.systemInfoReceived.emit(data)  # с помощью метода .emit передайте в виде списка данные о загрузке CPU и RAM
-            time.sleep(self.delay)  # с помощью функции .sleep() приостановите выполнение цикла на время self.delay
-            print("CPU value", cpu_value, "RAM value", ram_value)
 
 class WeatherHandler(QtCore.QThread):
     wheatherHandlerSignal = QtCore.Signal(str) # Пропишите сигналы, которые считаете нужными
@@ -51,6 +22,54 @@ class WeatherHandler(QtCore.QThread):
         self.__delay = 10
         self.__status = None
         self.delay1 = 1
+
+    def get_weather(self):
+        open_weather_token = "1044ae1ab27265501dac183236ffd563"
+
+        self.message = Window().message
+
+        code_to_smile = {
+            "Clear": "Ясно \U00002600",
+            "Clouds": "Облачно \U00002601",
+            "Rain": "Дождь \U00002614",
+            "Drizzle": "Дождь \U00002614",
+            "Thunderstorm": "Гроза \U000026A1",
+            "Snow": "Снег \U0001F328",
+            "Mist": "Туман \U0001F32B"
+        }
+
+        # try:
+        r = requests.get(
+            f"https://api.openweathermap.org/data/2.5/weather?q={message}&appid={open_weather_token}&units=metric"
+        )
+        data = r.json()
+
+        city = data["name"]
+        cur_weather = data["main"]["temp"]
+
+        weather_description = data["weather"][0]["main"]
+        if weather_description in code_to_smile:
+            wd = code_to_smile[weather_description]
+        else:
+            wd = "Посмотри в окно, не пойму что там за погода!"
+
+        humidity = data["main"]["humidity"]
+        pressure = data["main"]["pressure"]
+        wind = data["wind"]["speed"]
+        sunrise_timestamp = datetime.datetime.fromtimestamp(data["sys"]["sunrise"])
+        sunset_timestamp = datetime.datetime.fromtimestamp(data["sys"]["sunset"])
+        length_of_the_day = datetime.datetime.fromtimestamp(data["sys"]["sunset"]) - datetime.datetime.fromtimestamp(
+            data["sys"]["sunrise"])
+
+        mes_repl = (f"***{datetime.datetime.now().strftime('%d-%m-%Y %H:%M')}***\n"
+                    f"Погода в населенном пункте: {city}\nТемпература: {cur_weather}C° {wd}\n"
+                    f"Влажность: {humidity}%\nДавление: {pressure} мм.рт.ст\nВетер: {wind} м/с\n"
+                    f"Восход солнца: {sunrise_timestamp}\nЗакат солнца: {sunset_timestamp}\nПродолжительность дня: {length_of_the_day}\n"
+                    )
+        return mes_repl
+
+        # except:
+        #     print("Проверьте название города")
 
     def setDelay(self, delay) -> None:
         """
