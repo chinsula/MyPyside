@@ -47,7 +47,7 @@ class Window(QtWidgets.QWidget):
         self.weatherHandler = WeatherHandler("Урай" if not self.inputSity.text() else self.inputSity.text())
         self.weatherHandler.start()
         self.weatherHandler.sleep(self.weatherHandler.delay1)
-        self.weatherHandler.wheatherHandlerSignal.connect(lambda data: print(f"Статус код: {data}"))
+        # self.weatherHandler.wheatherHandlerSignal.connect(lambda data: print(f"Статус код: {data}"))
         self.weatherHandler.wheatherHandlerSignal.connect(self.apiUpdate)
 
     def apiUpdate(self, data):
